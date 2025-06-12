@@ -17,6 +17,8 @@
 namespace factor_exemption;
 
 use tool_mfa\local\factor\object_factor_base;
+use stdClass;
+use core_user;
 
 /**
  * Exemption factor class.
@@ -34,7 +36,7 @@ class factor extends object_factor_base {
      * @param stdClass $user the user to check against.
      * @return array
      */
-    public function get_all_user_factors(\stdClass $user): array{
+    public function get_all_user_factors(stdClass $user): array{
         global $DB;
 
         $records = $DB->get_records('tool_mfa', [
@@ -88,7 +90,7 @@ class factor extends object_factor_base {
     /**
      * Exemption factor implementation.
      *
-     * @param \stdClass $user
+     * @param stdClass $user
      */
     public function possible_states($user): array {
         // Exemption can only be neutral or pass.
@@ -101,10 +103,10 @@ class factor extends object_factor_base {
     /**
      * Add an exemption for a user.
      *
-     * @param \stdClass $user
+     * @param stdClass $user
      * @param int|null $duration
      */
-    public static function add_exemption(\stdClass $user, ?int $duration = null) {
+    public static function add_exemption(stdClass $user, ?int $duration = null) {
         global $DB;
 
         // Special case here. We should not process admin exemptions. Too much of a quick bypass.
@@ -164,10 +166,10 @@ class factor extends object_factor_base {
      * @param string $search the search term.
      * @return ?stdClass the found user or null
      */
-    public static function get_searched_user(string $search): ?\stdClass {
-        $user = \core_user::get_user_by_username($search);
+    public static function get_searched_user(string $search): ?stdClass {
+        $user = core_user::get_user_by_username($search);
         if (!$user) {
-            $user = \core_user::get_user_by_email($search);
+            $user = core_user::get_user_by_email($search);
         }
         if (!$user) {
             return null;
